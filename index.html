@@ -1,0 +1,1159 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>PETA SEBARAN F&B KOTA DENPASAR</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="data/Administrasi_Kelurahan_1.js"></script>
+        <script src="data/Jaringan_Jalan_Denpasar_2.js"></script>
+        <script src="data/Tempat_Wisata_3.js"></script>
+        <script src="data/Cafe_and_Restaurant_4.js"></script>
+        <script src="data/Hotel_5.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[-8.762287081929923,115.11427047369806],[-8.592340470549258,115.32532675518034]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'bottomleft'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>PETA SEBARAN F&B KOTA DENPASAR</h2>';
+        };
+        title.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0].className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_OSMStandard_0');
+        map.getPane('pane_OSMStandard_0').style.zIndex = 400;
+        var layer_OSMStandard_0 = L.tileLayer('http://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OSMStandard_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.openstreetmap.org/copyright">© OpenStreetMap contributors, CC-BY-SA</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OSMStandard_0;
+        map.addLayer(layer_OSMStandard_0);
+        function pop_Administrasi_Kelurahan_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NAMOBJ</th>\
+                        <td class="visible-with-data" id="NAMOBJ">' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(String(feature.properties['NAMOBJ']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">WADMKC</th>\
+                        <td class="visible-with-data" id="WADMKC">' + (feature.properties['WADMKC'] !== null ? autolinker.link(String(feature.properties['WADMKC']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">WADMKK</th>\
+                        <td class="visible-with-data" id="WADMKK">' + (feature.properties['WADMKK'] !== null ? autolinker.link(String(feature.properties['WADMKK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Administrasi_Kelurahan_1_0(feature) {
+            switch(String(feature.properties['NAMOBJ'])) {
+                case 'Dangin Puri':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dangin Puri Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(55,36,102,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dangin Puri Kangin':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,53,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dangin Puri Kauh':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(65,70,171,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dangin Puri Kelod':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,86,198,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dauh Puri':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,102,220,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dauh Puri Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,117,237,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dauh Puri Kangin':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,132,249,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dauh Puri Kauh':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,147,255,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Dauh Puri Kelod':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(58,162,252,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kesiman':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,177,244,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kesiman Kerthalangu':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(38,191,232,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Kesiman Petilan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,204,217,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Padangsambian':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(24,216,201,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Padangsambian Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,226,186,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Padangsambian Kelod':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,234,171,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Panjer':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,241,154,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pedungan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,247,134,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Peguyangan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,251,114,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Peguyangan Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(113,254,95,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Peguyangan Kangin':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(136,255,78,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pemecutan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(156,254,64,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pemecutan Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(172,251,56,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pemecutan Kelod':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(188,245,52,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Pemogan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(203,237,52,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Penatih':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(217,228,54,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Penatih Dangin Puri':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(229,217,56,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Renon':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(239,206,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sanur':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,194,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sanur Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(252,180,54,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sanur Kauh':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,165,49,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Serangan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,148,42,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sesetan':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,130,34,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sidakarya':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(248,113,27,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sumerta':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,95,20,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sumerta Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(235,79,14,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sumerta Kauh':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(226,66,10,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sumerta Kelod':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,54,6,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tegal Harum':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,43,4,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tegal Kertha':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(190,33,2,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tonja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(175,24,1,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ubung':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(158,16,1,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ubung Kaja':
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(139,9,2,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Administrasi_Kelurahan_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,4,3,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Administrasi_Kelurahan_1');
+        map.getPane('pane_Administrasi_Kelurahan_1').style.zIndex = 401;
+        map.getPane('pane_Administrasi_Kelurahan_1').style['mix-blend-mode'] = 'normal';
+        var layer_Administrasi_Kelurahan_1 = new L.geoJson(json_Administrasi_Kelurahan_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Administrasi_Kelurahan_1',
+            layerName: 'layer_Administrasi_Kelurahan_1',
+            pane: 'pane_Administrasi_Kelurahan_1',
+            onEachFeature: pop_Administrasi_Kelurahan_1,
+            style: style_Administrasi_Kelurahan_1_0,
+        });
+        bounds_group.addLayer(layer_Administrasi_Kelurahan_1);
+        map.addLayer(layer_Administrasi_Kelurahan_1);
+        function pop_Jaringan_Jalan_Denpasar_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">REMARK</th>\
+                        <td class="visible-with-data" id="REMARK">' + (feature.properties['REMARK'] !== null ? autolinker.link(String(feature.properties['REMARK']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Jaringan_Jalan_Denpasar_2_0() {
+            return {
+                pane: 'pane_Jaringan_Jalan_Denpasar_2',
+                opacity: 1,
+                color: 'rgba(152,125,183,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Jaringan_Jalan_Denpasar_2');
+        map.getPane('pane_Jaringan_Jalan_Denpasar_2').style.zIndex = 402;
+        map.getPane('pane_Jaringan_Jalan_Denpasar_2').style['mix-blend-mode'] = 'normal';
+        var layer_Jaringan_Jalan_Denpasar_2 = new L.geoJson(json_Jaringan_Jalan_Denpasar_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Jaringan_Jalan_Denpasar_2',
+            layerName: 'layer_Jaringan_Jalan_Denpasar_2',
+            pane: 'pane_Jaringan_Jalan_Denpasar_2',
+            onEachFeature: pop_Jaringan_Jalan_Denpasar_2,
+            style: style_Jaringan_Jalan_Denpasar_2_0,
+        });
+        bounds_group.addLayer(layer_Jaringan_Jalan_Denpasar_2);
+        map.addLayer(layer_Jaringan_Jalan_Denpasar_2);
+        function pop_Tempat_Wisata_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">OSrXXb</th>\
+                        <td class="visible-with-data" id="OSrXXb">' + (feature.properties['OSrXXb'] !== null ? autolinker.link(String(feature.properties['OSrXXb']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Full_Addre</th>\
+                        <td class="visible-with-data" id="Full_Addre">' + (feature.properties['Full_Addre'] !== null ? autolinker.link(String(feature.properties['Full_Addre']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Tempat_Wisata_3_0() {
+            return {
+                pane: 'pane_Tempat_Wisata_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(178,223,138,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Tempat_Wisata_3');
+        map.getPane('pane_Tempat_Wisata_3').style.zIndex = 403;
+        map.getPane('pane_Tempat_Wisata_3').style['mix-blend-mode'] = 'normal';
+        var layer_Tempat_Wisata_3 = new L.geoJson(json_Tempat_Wisata_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Tempat_Wisata_3',
+            layerName: 'layer_Tempat_Wisata_3',
+            pane: 'pane_Tempat_Wisata_3',
+            onEachFeature: pop_Tempat_Wisata_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Tempat_Wisata_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Tempat_Wisata_3);
+        map.addLayer(layer_Tempat_Wisata_3);
+        function pop_Cafe_and_Restaurant_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nama_Lokas</th>\
+                        <td class="visible-with-data" id="Nama_Lokas">' + (feature.properties['Nama_Lokas'] !== null ? autolinker.link(String(feature.properties['Nama_Lokas']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Full_Addre</th>\
+                        <td class="visible-with-data" id="Full_Addre">' + (feature.properties['Full_Addre'] !== null ? autolinker.link(String(feature.properties['Full_Addre']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Cafe_and_Restaurant_4_0() {
+            return {
+                pane: 'pane_Cafe_and_Restaurant_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,194,63,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Cafe_and_Restaurant_4');
+        map.getPane('pane_Cafe_and_Restaurant_4').style.zIndex = 404;
+        map.getPane('pane_Cafe_and_Restaurant_4').style['mix-blend-mode'] = 'normal';
+        var layer_Cafe_and_Restaurant_4 = new L.geoJson(json_Cafe_and_Restaurant_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Cafe_and_Restaurant_4',
+            layerName: 'layer_Cafe_and_Restaurant_4',
+            pane: 'pane_Cafe_and_Restaurant_4',
+            onEachFeature: pop_Cafe_and_Restaurant_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Cafe_and_Restaurant_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Cafe_and_Restaurant_4);
+        map.addLayer(layer_Cafe_and_Restaurant_4);
+        function pop_Hotel_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Nama_Pengi</th>\
+                        <td class="visible-with-data" id="Nama_Pengi">' + (feature.properties['Nama_Pengi'] !== null ? autolinker.link(String(feature.properties['Nama_Pengi']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Full_Addre</th>\
+                        <td class="visible-with-data" id="Full_Addre">' + (feature.properties['Full_Addre'] !== null ? autolinker.link(String(feature.properties['Full_Addre']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Hotel_5_0() {
+            return {
+                pane: 'pane_Hotel_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,120,180,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_Hotel_5');
+        map.getPane('pane_Hotel_5').style.zIndex = 405;
+        map.getPane('pane_Hotel_5').style['mix-blend-mode'] = 'normal';
+        var layer_Hotel_5 = new L.geoJson(json_Hotel_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Hotel_5',
+            layerName: 'layer_Hotel_5',
+            pane: 'pane_Hotel_5',
+            onEachFeature: pop_Hotel_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Hotel_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Hotel_5);
+        map.addLayer(layer_Hotel_5);
+        map.createPane('pane_FnB_6');
+        map.getPane('pane_FnB_6').style.zIndex = 406;
+        var img_FnB_6 = 'data/FnB_6.png';
+        var img_bounds_FnB_6 = [[-8.752843683539254,115.17292162366434],[-8.59145208549363,115.27500372071967]];
+        var layer_FnB_6 = new L.imageOverlay(img_FnB_6,
+                                              img_bounds_FnB_6,
+                                              {pane: 'pane_FnB_6'});
+        bounds_group.addLayer(layer_FnB_6);
+        map.addLayer(layer_FnB_6);
+        map.createPane('pane_Hotel_7');
+        map.getPane('pane_Hotel_7').style.zIndex = 407;
+        var img_Hotel_7 = 'data/Hotel_7.png';
+        var img_bounds_Hotel_7 = [[-8.752843683539254,115.17292162366434],[-8.59145208549363,115.27500372071967]];
+        var layer_Hotel_7 = new L.imageOverlay(img_Hotel_7,
+                                              img_bounds_Hotel_7,
+                                              {pane: 'pane_Hotel_7'});
+        bounds_group.addLayer(layer_Hotel_7);
+        map.addLayer(layer_Hotel_7);
+        map.createPane('pane_TempatWisata_8');
+        map.getPane('pane_TempatWisata_8').style.zIndex = 408;
+        var img_TempatWisata_8 = 'data/TempatWisata_8.png';
+        var img_bounds_TempatWisata_8 = [[-8.752843683539254,115.17292162366434],[-8.59145208549363,115.27500372071967]];
+        var layer_TempatWisata_8 = new L.imageOverlay(img_TempatWisata_8,
+                                              img_bounds_TempatWisata_8,
+                                              {pane: 'pane_TempatWisata_8'});
+        bounds_group.addLayer(layer_TempatWisata_8);
+        map.addLayer(layer_TempatWisata_8);
+        map.createPane('pane_GWR_9');
+        map.getPane('pane_GWR_9').style.zIndex = 409;
+        var img_GWR_9 = 'data/GWR_9.png';
+        var img_bounds_GWR_9 = [[-8.752577748827365,115.17336054582444],[-8.59140039125085,115.27445696923134]];
+        var layer_GWR_9 = new L.imageOverlay(img_GWR_9,
+                                              img_bounds_GWR_9,
+                                              {pane: 'pane_GWR_9'});
+        bounds_group.addLayer(layer_GWR_9);
+        map.addLayer(layer_GWR_9);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var overlaysTree = [
+            {label: "GWR", layer: layer_GWR_9},
+            {label: "Tempat Wisata", layer: layer_TempatWisata_8},
+            {label: "Hotel", layer: layer_Hotel_7},
+            {label: "FnB", layer: layer_FnB_6},
+            {label: '<img src="legend/Hotel_5.png" /> Hotel', layer: layer_Hotel_5},
+            {label: '<img src="legend/Cafe_and_Restaurant_4.png" /> Cafe_and_Restaurant', layer: layer_Cafe_and_Restaurant_4},
+            {label: '<img src="legend/Tempat_Wisata_3.png" /> Tempat_Wisata', layer: layer_Tempat_Wisata_3},
+            {label: '<img src="legend/Jaringan_Jalan_Denpasar_2.png" /> Jaringan_Jalan_Denpasar', layer: layer_Jaringan_Jalan_Denpasar_2},
+            {label: 'Administrasi_Kelurahan<br /><table><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DanginPuri0.png" /></td><td>Dangin Puri</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DanginPuriKaja1.png" /></td><td>Dangin Puri Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DanginPuriKangin2.png" /></td><td>Dangin Puri Kangin</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DanginPuriKauh3.png" /></td><td>Dangin Puri Kauh</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DanginPuriKelod4.png" /></td><td>Dangin Puri Kelod</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DauhPuri5.png" /></td><td>Dauh Puri</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DauhPuriKaja6.png" /></td><td>Dauh Puri Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DauhPuriKangin7.png" /></td><td>Dauh Puri Kangin</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DauhPuriKauh8.png" /></td><td>Dauh Puri Kauh</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_DauhPuriKelod9.png" /></td><td>Dauh Puri Kelod</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Kesiman10.png" /></td><td>Kesiman</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_KesimanKerthalangu11.png" /></td><td>Kesiman Kerthalangu</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_KesimanPetilan12.png" /></td><td>Kesiman Petilan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Padangsambian13.png" /></td><td>Padangsambian</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PadangsambianKaja14.png" /></td><td>Padangsambian Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PadangsambianKelod15.png" /></td><td>Padangsambian Kelod</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Panjer16.png" /></td><td>Panjer</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Pedungan17.png" /></td><td>Pedungan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Peguyangan18.png" /></td><td>Peguyangan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PeguyanganKaja19.png" /></td><td>Peguyangan Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PeguyanganKangin20.png" /></td><td>Peguyangan Kangin</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Pemecutan21.png" /></td><td>Pemecutan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PemecutanKaja22.png" /></td><td>Pemecutan Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PemecutanKelod23.png" /></td><td>Pemecutan Kelod</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Pemogan24.png" /></td><td>Pemogan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Penatih25.png" /></td><td>Penatih</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_PenatihDanginPuri26.png" /></td><td>Penatih Dangin Puri</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Renon27.png" /></td><td>Renon</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Sanur28.png" /></td><td>Sanur</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_SanurKaja29.png" /></td><td>Sanur Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_SanurKauh30.png" /></td><td>Sanur Kauh</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Serangan31.png" /></td><td>Serangan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Sesetan32.png" /></td><td>Sesetan</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Sidakarya33.png" /></td><td>Sidakarya</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Sumerta34.png" /></td><td>Sumerta</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_SumertaKaja35.png" /></td><td>Sumerta Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_SumertaKauh36.png" /></td><td>Sumerta Kauh</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_SumertaKelod37.png" /></td><td>Sumerta Kelod</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_TegalHarum38.png" /></td><td>Tegal Harum</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_TegalKertha39.png" /></td><td>Tegal Kertha</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Tonja40.png" /></td><td>Tonja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_Ubung41.png" /></td><td>Ubung</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_UbungKaja42.png" /></td><td>Ubung Kaja</td></tr><tr><td style="text-align: center;"><img src="legend/Administrasi_Kelurahan_1_43.png" /></td><td></td></tr></table>', layer: layer_Administrasi_Kelurahan_1},
+            {label: "OSM Standard", layer: layer_OSMStandard_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+		document.addEventListener("DOMContentLoaded", function() {
+            // set new Layers List height which considers toggle icon
+            function newLayersListHeight() {
+                var layerScrollbarElement = document.querySelector('.leaflet-control-layers-scrollbar');
+                if (layerScrollbarElement) {
+                    var layersListElement = document.querySelector('.leaflet-control-layers-list');
+                    var originalHeight = layersListElement.style.height 
+                        || window.getComputedStyle(layersListElement).height;
+                    var newHeight = parseFloat(originalHeight) - 50;
+                    layersListElement.style.height = newHeight + 'px';
+                }
+            }
+            var isLayersListExpanded = true;
+            var controlLayersElement = document.querySelector('.leaflet-control-layers');
+            var toggleLayerControl = document.querySelector('.leaflet-control-layers-toggle');
+            // toggle Collapsed/Expanded and apply new Layers List height
+            toggleLayerControl.addEventListener('click', function() {
+                if (isLayersListExpanded) {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                } else {
+                    controlLayersElement.classList.add('leaflet-control-layers-expanded');
+                }
+                isLayersListExpanded = !isLayersListExpanded;
+                newLayersListHeight()
+            });	
+			// apply new Layers List height if toggle layerstree
+			if (controlLayersElement) {
+				controlLayersElement.addEventListener('click', function(event) {
+					var toggleLayerHeaderPointer = event.target.closest('.leaflet-layerstree-header-pointer span');
+					if (toggleLayerHeaderPointer) {
+						newLayersListHeight();
+					}
+				});
+			}
+            // Collapsed/Expanded at Start to apply new height
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            setTimeout(function() {
+                toggleLayerControl.click();
+            }, 10);
+            // Collapsed touch/small screen
+            var isSmallScreen = window.innerWidth < 650;
+            if (isSmallScreen) {
+                setTimeout(function() {
+                    controlLayersElement.classList.remove('leaflet-control-layers-expanded');
+                    isLayersListExpanded = !isLayersListExpanded;
+                }, 500);
+            }  
+        });       
+        setBounds();
+        map.addControl(new L.Control.Search({
+            layer: layer_Hotel_5,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'Alamat'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        L.ImageOverlay.include({
+            getBounds: function () {
+                return this._bounds;
+            }
+        });
+        </script>
+    </body>
+</html>
